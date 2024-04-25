@@ -4,7 +4,7 @@ compile:
 	javac -implicit:none *.java
 
 run:
-	java Main
+	java SudokuInterface
 
 clean:
 	rm -f *.class
