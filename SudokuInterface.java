@@ -47,7 +47,7 @@ public class SudokuInterface extends JFrame implements ActionListener {
         buttonPanel.add(resoudreButton);
         add(buttonPanel, BorderLayout.SOUTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 500);
+        pack(); // Ajuster la taille de la fenêtre pour qu'elle s'adapte au contenu
         setLocationRelativeTo(null);
         setVisible(true);
     }
