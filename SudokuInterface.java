@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,18 +19,25 @@ public class SudokuInterface extends JFrame implements ActionListener {
 
         // Création des boutons pour chaque cellule de la grille
         boutons = new JButton[9][9];
-        grillePanel = new JPanel(new GridLayout(9, 9));
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                boutons[i][j] = new JButton();
-                boutons[i][j].setFont(new Font("Arial", Font.PLAIN, 20));
-                boutons[i][j].setPreferredSize(new Dimension(50, 50));
-                boutons[i][j].addActionListener(this);
-                grillePanel.add(boutons[i][j]);
+        grillePanel = new JPanel(new GridLayout(3, 3));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                JPanel sousGrillePanel = new JPanel(new GridLayout(3, 3));
+                Border border = BorderFactory.createLineBorder(Color.BLACK, 5); // Bordure de largeur 5
+                sousGrillePanel.setBorder(border);
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < 3; l++) {
+                        boutons[i * 3 + k][j * 3 + l] = new JButton();
+                        boutons[i * 3 + k][j * 3 + l].setFont(new Font("Arial", Font.PLAIN, 20));
+                        boutons[i * 3 + k][j * 3 + l].setPreferredSize(new Dimension(50, 50));
+                        boutons[i * 3 + k][j * 3 + l].setBackground(Color.WHITE); // Couleur blanche
+                        boutons[i * 3 + k][j * 3 + l].addActionListener(this);
+                        sousGrillePanel.add(boutons[i * 3 + k][j * 3 + l]);
+                    }
+                }
+                grillePanel.add(sousGrillePanel);
             }
         }
-
-        
 
         // Création du bouton "Jouer"
         jouerButton = new JButton("Jouer");
