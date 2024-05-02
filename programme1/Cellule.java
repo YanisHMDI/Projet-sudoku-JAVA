@@ -19,7 +19,7 @@ public class Cellule {
     public void setValeur(int valeur) {
         this.valeur = valeur;
     }
-    
+
     public boolean estVide() {
         return valeur == 0;
     }

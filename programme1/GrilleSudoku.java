@@ -9,14 +9,6 @@ public class GrilleSudoku {
             }
         }
     }
- 
-    public void viderGrille() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                grille[i][j].setValeur(0);
-            }
-        }
-    }
 
     public Cellule getCellule(int ligne, int colonne) {
         return grille[ligne][colonne];
@@ -26,7 +18,7 @@ public class GrilleSudoku {
         grille[ligne][colonne].setValeur(valeur);
     }
 
-   public boolean estValide(int ligne, int colonne, int valeur) {
+    public boolean estValide(int ligne, int colonne, int valeur) {
         // Vérifie si la valeur est déjà présente dans la même ligne
         for (int i = 0; i < 9; i++) {
             if (i != colonne && grille[ligne][i].getValeur() == valeur) {
@@ -46,7 +38,7 @@ public class GrilleSudoku {
         int blocColonne = colonne / 3 * 3;
         for (int i = blocLigne; i < blocLigne + 3; i++) {
             for (int j = blocColonne; j < blocColonne + 3; j++) {
-                if ((i != ligne || j != colonne) && grille[i][j].getValeur() == valeur) {
+                if (grille[i][j].getValeur() == valeur) {
                     return false;
                 }
             }
@@ -54,9 +46,6 @@ public class GrilleSudoku {
 
         return true; // Retourne true si la valeur est valide
     }
-
-    
-
 
     public boolean estComplet() {
         for (int i = 0; i < 9; i++) {

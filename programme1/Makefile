@@ -1,5 +1,3 @@
-# Liste des fichiers sources
-SOURCES = Cellule.java GrilleSudoku.java SudokuInterface.java SudokuFileHandler.java SudokuSolver.java Main.java
 
 # Nom du fichier exécutable
 EXECUTABLE = Main
@@ -8,14 +6,14 @@ EXECUTABLE = Main
 CLASSES = $(SOURCES:.java=.class)
 
 # Commande pour compiler les fichiers sources en bytecode Java
-COMPILE = javac *.java
+COMPILE =  javac -implicit:none *.java
 
 # Commande pour exécuter le programme
 RUN = java -classpath . $(EXECUTABLE)
 
 # Règle pour la compilation
 compile:
-	$(COMPILE) $(SOURCES)
+	$(COMPILE) 
 
 # Règle pour exécuter le programme
 run:

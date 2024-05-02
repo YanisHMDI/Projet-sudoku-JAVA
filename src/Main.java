@@ -5,6 +5,9 @@ public class Main {
         // Création de l'interface graphique Sudoku
         SudokuInterface sudokuInterface = new SudokuInterface();
 
+        // Création du contrôleur en lui passant la grille et l'interface
+        SudokuController sudokuController = new SudokuController(sudokuInterface.getGrille(), sudokuInterface);
+
         // Affichage de l'interface graphique Sudoku
         sudokuInterface.setVisible(true);
     }
