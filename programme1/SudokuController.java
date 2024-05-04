@@ -32,12 +32,17 @@ public class SudokuController implements ActionListener {
             try {
                 // Convertir la valeur en entier
                 int value = Integer.parseInt(inputValue);
-                // Mettre à jour la valeur de la cellule dans la grille
-                grille.setCellule(row, col, value);
-                // Mettre à jour l'affichage du bouton
-                selectedButton.setText(inputValue);
+                // Vérifier si la valeur est valide
+                if (grille.estValide(row, col, value)) {
+                    // Mettre à jour la valeur de la cellule dans la grille
+                    grille.setCellule(row, col, value);
+                    // Mettre à jour l'affichage du bouton
+                    selectedButton.setText(inputValue);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid number! Please enter a valid number.");
+                }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Invalid number format!");
+                JOptionPane.showMessageDialog(null, "Invalid number format! Please enter a valid number.");
             }
         }
     }

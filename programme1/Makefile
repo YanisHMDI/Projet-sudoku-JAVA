@@ -24,4 +24,4 @@ default: compile
 
 # Nettoyer les fichiers générés
 clean:
-	rm -f $(CLASSES)
+	rm -f *.class

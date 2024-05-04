@@ -55,6 +55,12 @@ public class SudokuInterface extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+
+        // Création du contrôleur
+        controller = new SudokuController(grille, this);
+        // Ajout des action listeners aux boutons Sauvegarder et Charger
+        sauvegarderButton.addActionListener(controller);
+        chargerButton.addActionListener(controller);
     }
 
     public JButton[][] getBoutons() {
@@ -74,6 +80,9 @@ public class SudokuInterface extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(SudokuInterface::new);
+        SwingUtilities.invokeLater(() -> {
+            GrilleSudoku grille = SudokuFileIO.chargerGrilleVide(); // Charger une grille vide au démarrage
+            SudokuInterface sudokuInterface = new SudokuInterface(grille);
+        });
     }
 }

@@ -7,7 +7,7 @@ public class SudokuFileIO {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME))) {
             for (int ligne = 0; ligne < 9; ligne++) {
                 for (int colonne = 0; colonne < 9; colonne++) {
-                    writer.print("0 "); // Grille vide
+                    writer.print("0"); // Grille vide
                 }
                 writer.println();
             }
