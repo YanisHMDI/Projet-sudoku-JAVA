@@ -1,0 +1,566 @@
+public class AutomatiqueSolver extends SudokuSolver {
+
+    public AutomatiqueSolver(GrilleSudoku grille) {
+        super(grille);
+    }
+
+    @Override
+    public boolean resoudre() {
+        return resoudreRecursive(0, 0);
+    }
+
+    private boolean resoudreRecursive(int ligne, int colonne) {
+        if (ligne == 9) {
+            ligne = 0;
+            if (++colonne == 9) {
+                return true; // Toutes les cases ont été remplies
+            }
+        }
+        if (grille.getCellule(ligne, colonne).getValeur() != 0) {
+            return resoudreRecursive(ligne + 1, colonne);
+        }
+        for (int valeur = 1; valeur <= 9; valeur++) {
+            if (grille.estValide(ligne, colonne, valeur)) {
+                grille.setCellule(ligne, colonne, valeur);
+                if (resoudreRecursive(ligne + 1, colonne)) {
+                    return true;
+                }
+            }
+        }
+        grille.setCellule(ligne, colonne, 0); // Annuler la tentative
+        return false;
+    }
+}
+
+import java.io.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Cellule implements Serializable {
+    private int valeur;
+
+    public Cellule() {
+        this.valeur = 0; // Par défaut, une cellule est vide
+    }
+
+    public Cellule(int valeur) {
+        if (valeur < 0 || valeur > 9) {
+            throw new IllegalArgumentException("La valeur d'une cellule doit être entre 0 et 9 inclus.");
+        }
+        this.valeur = valeur;
+    }
+
+    public int getValeur() {
+        return valeur;
+    }
+
+    public void setValeur(int valeur) {
+        this.valeur = valeur;
+    }
+
+    public boolean estVide() {
+        return valeur == 0;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(valeur);
+    }
+}
+
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class ChargerSauvegardeController {
+    public int[][] loadGridData(String filePath, JFrame frame) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            int[][] gridData = new int[9][9];
+            String line;
+            int row = 0;
+            while ((line = reader.readLine()) != null && row < 9) {
+                for (int col = 0; col < 9 && col < line.length(); col++) {
+                    char c = line.charAt(col);
+                    if (c == '.') {
+                        gridData[row][col] = 0;
+                    } else if (Character.isDigit(c)) {
+                        gridData[row][col] = Character.getNumericValue(c);
+                    } else {
+                        gridData[row][col] = -1;
+                    }
+                }
+                row++;
+            }
+            reader.close();
+            System.out.println("Grille chargée avec succès.");
+            return gridData;
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, "Erreur lors du chargement de la grille : " + e.getMessage());
+        }
+        return null;
+    }
+}
+import java.io.Serializable;
+
+public class GrilleSudoku implements Serializable {
+    private static final long serialVersionUID = 1L; // Numéro de série pour la sérialisation
+    private Cellule[][] grille;
+
+    public GrilleSudoku() {
+        grille = new Cellule[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                grille[i][j] = new Cellule();
+            }
+        }
+    }
+
+    public Cellule getCellule(int ligne, int colonne) {
+        return grille[ligne][colonne];
+    }
+    
+
+    public void reinitialiser() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                grille[i][j].setValeur(0); // Remise à zéro de la valeur de chaque cellule
+            }
+        }
+    }
+
+
+
+    public void setCellule(int ligne, int colonne, int valeur) {
+        grille[ligne][colonne].setValeur(valeur);
+    }
+
+    public boolean estValide(int ligne, int colonne, int valeur) {
+        // Vérifie si la valeur est déjà présente dans la même ligne
+        for (int i = 0; i < 9; i++) {
+            if (i != colonne && grille[ligne][i].getValeur() == valeur) {
+                return false;
+            }
+        }
+
+        // Vérifie si la valeur est déjà présente dans la même colonne
+        for (int j = 0; j < 9; j++) {
+            if (j != ligne && grille[j][colonne].getValeur() == valeur) {
+                return false;
+            }
+        }
+
+        // Vérifie si la valeur est déjà présente dans le même bloc 3x3
+        int blocLigne = ligne / 3 * 3;
+        int blocColonne = colonne / 3 * 3;
+        for (int i = blocLigne; i < blocLigne + 3; i++) {
+            for (int j = blocColonne; j < blocColonne + 3; j++) {
+                if (grille[i][j].getValeur() == valeur) {
+                    return false;
+                }
+            }
+        }
+
+        return true; // Retourne true si la valeur est valide
+    }
+
+    public boolean estComplet() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (grille[i][j].estVide()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean resoudre() {
+    return resoudre(0, 0);
+}
+
+    private boolean resoudre(int ligne, int colonne) {
+        if (ligne == 9) {
+            return true; // La grille est résolue
+        }
+
+        if (grille[ligne][colonne].estVide()) {
+            for (int valeur = 1; valeur <= 9; valeur++) {
+                if (estValide(ligne, colonne, valeur)) {
+                    grille[ligne][colonne].setValeur(valeur);
+                    int nextLigne = ligne + (colonne + 1) / 9;
+                    int nextColonne = (colonne + 1) % 9;
+                    if (resoudre(nextLigne, nextColonne)) {
+                        return true;
+                    }
+                    grille[ligne][colonne].setValeur(0); // Réinitialiser la valeur si la résolution a échoué
+                }
+            }
+            return false; // Aucune valeur valide pour cette case
+        } else {
+            int nextLigne = ligne + (colonne + 1) / 9;
+            int nextColonne = (colonne + 1) % 9;
+            return resoudre(nextLigne, nextColonne); // Passer à la prochaine case
+        }
+    }
+}
+
+import javax.swing.*;
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            GrilleSudoku grille = SudokuFileIO.chargerGrilleVide(); // Charger une grille vide au démarrage
+            SudokuInterface sudokuInterface = new SudokuInterface(grille);
+            SudokuController controller = new SudokuController(grille, sudokuInterface);
+            sudokuInterface.setVisible(true);
+        });
+    }
+}
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import java.awt.Color;
+
+public class ManuelSolver extends SudokuSolver {
+    private SudokuInterface sudokuInterface;
+
+    public ManuelSolver(GrilleSudoku grille, SudokuInterface sudokuInterface) {
+        super(grille);
+        this.sudokuInterface = sudokuInterface;
+    }
+
+    @Override
+    public boolean resoudre() {
+        return false;
+    }
+
+    public void resoudreManuellement() {
+        JButton[][] boutons = sudokuInterface.getBoutons();
+        for (int ligne = 0; ligne < 9; ligne++) {
+            for (int colonne = 0; colonne < 9; colonne++) {
+                Cellule cellule = grille.getCellule(ligne, colonne);
+                if (cellule.estVide()) {
+                    // Afficher un message pour indiquer à l'utilisateur de remplir la case (ligne, colonne)
+                    JOptionPane.showMessageDialog(sudokuInterface, "Veuillez remplir la case (" + (ligne + 1) + ", " + (colonne + 1) + ").");
+
+                    // Attendre que l'utilisateur remplisse la case
+                    boolean caseRemplie = false;
+                    while (!caseRemplie) {
+                        // Mettre en surbrillance la case pour indiquer à l'utilisateur de la remplir
+                        boutons[ligne][colonne].setBackground(Color.YELLOW);
+                        // Attendre que l'utilisateur clique sur la case et entre une valeur
+                        try {
+                            Thread.sleep(500); // Attente de 500 millisecondes pour permettre à l'interface de se mettre à jour
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Vérifier si la case a été remplie
+                        if (!cellule.estVide()) {
+                            caseRemplie = true;
+                            // Réinitialiser la couleur de fond de la case
+                            boutons[ligne][colonne].setBackground(Color.WHITE);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.File;
+
+public class SudokuController implements ActionListener {
+    private GrilleSudoku grille;
+    private SudokuInterface sudokuInterface;
+    private SudokuSolver solver;
+
+    public SudokuController(GrilleSudoku grille, SudokuInterface sudokuInterface) {
+        this.grille = grille;
+        this.sudokuInterface = sudokuInterface;
+        this.solver = new AutomatiqueSolver(grille);
+
+        sudokuInterface.getResoudreButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resoudreGrille();
+            }
+        });
+
+        for (JButton[] row : sudokuInterface.getBoutons()) {
+            for (JButton button : row) {
+                button.addActionListener(this); // Ajout de l'action listener pour chaque bouton de la grille
+            }
+        }
+        choisirMode();
+    }
+
+    
+    
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JButton selectedButton = (JButton) e.getSource();
+
+        // Récupérer les coordonnées de la case sélectionnée à partir du bouton cliqué
+        int row = (int) selectedButton.getClientProperty("row");
+        int col = (int) selectedButton.getClientProperty("col");
+
+        // Demander à l'utilisateur d'entrer une valeur
+        String inputValue = JOptionPane.showInputDialog("Entrez un nombre entre 1 et 9 :");
+        // Vérifier si l'entrée n'est pas nulle
+        if (inputValue != null && !inputValue.isEmpty()) {
+            try {
+                // Convertir la valeur en entier
+                int value = Integer.parseInt(inputValue);
+                // Vérifier si la valeur est dans la plage valide
+                if (value >= 1 && value <= 9) {
+                    // Vérifier si la valeur est valide pour cette cellule
+                    if (grille.estValide(row, col, value)) {
+                        // Mettre à jour la valeur de la cellule dans la grille
+                        grille.setCellule(row, col, value);
+                        // Mettre à jour l'affichage du bouton
+                        selectedButton.setText(inputValue);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Nombre invalide ! Veuillez entrer un nombre valide.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Le nombre doit être compris entre 1 et 9.");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null, "Format de nombre invalide ! Veuillez entrer un nombre valide.");
+            }
+        }
+    }
+
+    private void resoudreGrille() {
+        if (solver.resoudre()) { // Appel de la méthode de résolution automatique
+            sudokuInterface.refreshUI(); // Mettre à jour l'interface utilisateur avec la grille résolue
+            JOptionPane.showMessageDialog(sudokuInterface, "Grille résolue avec succès !");
+        } else {
+            JOptionPane.showMessageDialog(sudokuInterface, "La grille n'a pas de solution.");
+        }
+    }
+
+    private void choisirMode() {
+        // Afficher un menu pour choisir le mode (manuel ou automatique)
+        int choix = JOptionPane.showOptionDialog(null, "Choisissez le mode de jeu", "Mode de jeu",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                new String[] { "Manuel", "Automatique" }, "Manuel");
+
+        if (choix == JOptionPane.YES_OPTION) {
+            // Mode manuel
+            grille = new GrilleSudoku();
+        } else {
+            // Mode automatique
+            grille = new GrilleSudoku();
+            // Logique pour générer une grille automatiquement
+            grille.resoudre(); // Par exemple
+        }
+    }
+
+}
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class SudokuFileHandler {
+    public static GrilleSudoku chargerGrille(String cheminFichier) throws FileNotFoundException {
+        GrilleSudoku grille = new GrilleSudoku();
+        File fichier = new File(cheminFichier);
+        Scanner scanner = new Scanner(fichier);
+        
+        for (int i = 0; i < 9; i++) {
+            String ligne = scanner.nextLine();
+            for (int j = 0; j < 9; j++) {
+                int valeur = Character.getNumericValue(ligne.charAt(j));
+                grille.setCellule(i, j, valeur);
+            }
+        }
+        
+        scanner.close();
+        return grille;
+    }
+
+
+}
+
+import java.io.*;
+
+public class SudokuFileIO {
+    private static final String FILENAME = "sudoku.ser";
+
+    public static GrilleSudoku chargerGrilleVide() {
+        return new GrilleSudoku(); // Retourne une nouvelle grille vide
+    }
+}
+
+import java.io.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.border.Border;
+
+public class SudokuInterface extends JFrame {
+    private GrilleSudoku grille;
+    private JButton[][] boutons;
+    private JButton chargerButton;
+    private JButton resoudreButton;
+    private JButton reinitialiserButton;
+    private GrilleSudoku grilleChargee;
+
+    public SudokuInterface(GrilleSudoku grille) {
+        super("Sudoku");
+        this.grille = grille;
+
+        boutons = new JButton[9][9];
+        // Initialisation de l'interface graphique
+        JPanel grillePanel = new JPanel(new GridLayout(3, 3));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                JPanel sousGrillePanel = new JPanel(new GridLayout(3, 3));
+                Border border = BorderFactory.createLineBorder(Color.BLACK, 5); // Bordure de largeur 5
+                sousGrillePanel.setBorder(border);
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < 3; l++) {
+                        boutons[i * 3 + k][j * 3 + l] = new JButton();
+                        boutons[i * 3 + k][j * 3 + l].setFont(new Font("Arial", Font.PLAIN, 20));
+                        boutons[i * 3 + k][j * 3 + l].setPreferredSize(new Dimension(50, 50));
+                        boutons[i * 3 + k][j * 3 + l].setBackground(Color.WHITE); // Couleur blanche
+                        // Ajout des coordonnées comme attribut du bouton
+                        boutons[i * 3 + k][j * 3 + l].putClientProperty("row", i * 3 + k);
+                        boutons[i * 3 + k][j * 3 + l].putClientProperty("col", j * 3 + l);
+
+                        sousGrillePanel.add(boutons[i * 3 + k][j * 3 + l]);
+                    }
+                }
+                grillePanel.add(sousGrillePanel);
+            }
+        }
+
+        chargerButton = new JButton("Charger");
+        resoudreButton = new JButton("Résoudre");
+        reinitialiserButton = new JButton("Réinitialiser");
+
+        // Ajout du bouton de chargement
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3)); 
+        buttonPanel.add(chargerButton);
+        buttonPanel.add(resoudreButton);
+        buttonPanel.add(reinitialiserButton);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        // Ajout du grillePanel à la fenêtre principale
+        add(grillePanel, BorderLayout.CENTER);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        // Ajout de l'action pour le bouton de chargement
+        chargerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int choice = fileChooser.showOpenDialog(SudokuInterface.this);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    chargerGrille(file);
+                }
+            }
+        });
+
+        // Ajout de l'action pour le bouton "Résoudre"
+        resoudreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resoudreGrille();
+            }
+        });
+
+        reinitialiserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                grille.reinitialiser(); // Réinitialisation de la grille
+                refreshUI(); // Mise à jour de l'interface utilisateur
+            }
+        });
+    }
+
+    public void desactiverEditionGrilleChargee() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (!grilleChargee.getCellule(i, j).estVide()) {
+                    boutons[i][j].setEnabled(false); // Désactiver l'édition des cellules chargées
+                }
+            }
+        }
+    }
+
+    private void chargerGrille(File file) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
+            grilleChargee = (GrilleSudoku) inputStream.readObject(); // Stocker la grille chargée
+            grille = grilleChargee; // Mettre à jour la grille affichée
+            refreshUI();
+            System.out.println("Grille chargée avec succès.");
+
+            desactiverEditionGrilleChargee();
+
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "Erreur lors du chargement de la grille : " + ex.getMessage());
+        }
+    }
+
+    private void resoudreGrille() {
+        if (grille == null) {
+            JOptionPane.showMessageDialog(this, "Veuillez charger une grille avant de la résoudre.");
+            return;
+        }
+        if (!grille.resoudre()) {
+            JOptionPane.showMessageDialog(this, "La grille chargée n'a pas de solution.");
+        }
+        refreshUI(); // Mettre à jour l'interface utilisateur après la résolution
+    }
+
+    public void refreshUI() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                int valeur = grille.getCellule(i, j).getValeur();
+                boutons[i][j].setText(valeur == 0 ? "" : Integer.toString(valeur));
+            }
+        }
+    }
+
+    public JButton[][] getBoutons() {
+        return boutons;
+    }
+
+    public JButton getChargerButton() {
+        return chargerButton;
+    }
+
+    public JButton getResoudreButton() {
+        return resoudreButton;
+    }
+}
+
+public abstract class SudokuSolver {
+    protected GrilleSudoku grille;
+
+    public SudokuSolver(GrilleSudoku grille) {
+        this.grille = grille;
+    }
+
+    public abstract boolean resoudre();
+}

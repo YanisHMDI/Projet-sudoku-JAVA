@@ -1,0 +1,295 @@
+/**
+ * La classe Cellule représente une cellule individuelle dans une grille Sudoku.
+ */
+public class Cellule implements Serializable {
+    private int valeur;
+
+    /**
+     * Constructeur par défaut. Initialise une cellule vide.
+     */
+    public Cellule() {
+        this.valeur = 0;
+    }
+
+    /**
+     * Constructeur qui initialise une cellule avec une valeur spécifiée.
+     * @param valeur La valeur de la cellule.
+     * @throws IllegalArgumentException Si la valeur n'est pas entre 0 et 9 inclus.
+     */
+    public Cellule(int valeur) {
+        // implémentation
+    }
+
+    // Méthodes publiques
+}
+
+/**
+ * La classe ChargerSauvegardeController gère le chargement des données de grille depuis un fichier.
+ */
+public class ChargerSauvegardeController {
+    /**
+     * Charge les données de grille depuis un fichier spécifié.
+     * @param filePath Le chemin du fichier à charger.
+     * @param frame La fenêtre parente pour afficher les messages d'erreur.
+     * @return Un tableau 2D d'entiers représentant les données de la grille chargées.
+     */
+    public int[][] loadGridData(String filePath, JFrame frame) {
+        // implémentation
+    }
+}
+
+/**
+ * La classe GrilleSudoku représente la grille de Sudoku.
+ */
+public class GrilleSudoku implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private Cellule[][] grille;
+
+    /**
+     * Constructeur par défaut. Initialise une grille vide.
+     */
+    public GrilleSudoku() {
+        // implémentation
+    }
+
+    // Méthodes publiques
+}
+
+/**
+ * La classe Main est la classe principale du programme. Elle initialise l'interface utilisateur.
+ */
+public class Main {
+    public static void main(String[] args) {
+        // Méthode main pour démarrer l'application
+    }
+}
+
+/**
+ * La classe SauvegardeController gère la sauvegarde des données de grille dans un fichier.
+ */
+public class SauvegardeController {
+    /**
+     * Sauvegarde les données de grille dans un fichier spécifié.
+     * @param sudokuGridData Les données de grille à sauvegarder.
+     * @param frame La fenêtre parente pour afficher les messages d'erreur.
+     */
+    public void saveData(int[][] sudokuGridData, JFrame frame) {
+        // implémentation
+    }
+}
+
+/**
+ * La classe SudokuController gère les actions de l'utilisateur sur la grille de Sudoku.
+ */
+public class SudokuController implements ActionListener {
+    private GrilleSudoku grille;
+    private SudokuInterface sudokuInterface;
+
+    /**
+     * Constructeur de la classe SudokuController.
+     * @param grille La grille de Sudoku à contrôler.
+     * @param sudokuInterface L'interface utilisateur associée.
+     */
+    public SudokuController(GrilleSudoku grille, SudokuInterface sudokuInterface) {
+        // implémentation
+    }
+
+    /**
+     * Réagit aux actions de l'utilisateur sur les boutons de la grille.
+     * @param e L'événement d'action.
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // implémentation
+    }
+}
+
+/**
+ * La classe SudokuFileHandler gère la lecture et l'écriture de fichiers de grille Sudoku.
+ */
+public class SudokuFileHandler {
+    /**
+     * Charge une grille de Sudoku à partir d'un fichier spécifié.
+     * @param cheminFichier Le chemin du fichier à charger.
+     * @return La grille de Sudoku chargée.
+     * @throws FileNotFoundException Si le fichier spécifié n'est pas trouvé.
+     */
+    public static GrilleSudoku chargerGrille(String cheminFichier) throws FileNotFoundException {
+        // implémentation
+    }
+
+    // Méthode sauvegarderGrille() implémentée
+}
+
+/**
+ * La classe SudokuFileIO gère la sauvegarde et le chargement de grilles de Sudoku en utilisant la sérialisation.
+ */
+public class SudokuFileIO {
+    private static final String FILENAME = "sudoku.ser";
+
+    /**
+     * Sauvegarde la grille de Sudoku en utilisant la sérialisation.
+     * @param grille La grille de Sudoku à sauvegarder.
+     */
+    public static void sauvegarderGrille(GrilleSudoku grille) {
+        // implémentation
+    }
+
+    /**
+     * Charge une grille de Sudoku vide.
+     * @return Une nouvelle grille de Sudoku vide.
+     */
+    public static GrilleSudoku chargerGrilleVide() {
+        // implémentation
+    }
+}
+
+/**
+ * La classe SudokuInterface représente l'interface graphique pour jouer au Sudoku.
+ */
+public class SudokuInterface extends JFrame {
+    private GrilleSudoku grille;
+    private JButton[][] boutons;
+    private JButton sauvegarderButton;
+    private JButton chargerButton;
+
+    /**
+     * Constructeur de la classe SudokuInterface.
+     * @param grille La grille de Sudoku à afficher dans l'interface.
+     */
+    public SudokuInterface(GrilleSudoku grille) {
+        // implémentation
+    }
+
+    // Méthodes privées implémentées
+
+    /**
+     * Obtient la grille de boutons utilisée dans l'interface.
+     * @return La grille de boutons.
+     */
+    public JButton[][] getBoutons() {
+        return boutons;
+    }
+}
+
+/**
+ * -----------------------------
+ * VOICI LA DOC DU PROGRAMME 2 
+ */
+
+ /**
+ * La classe AutomatiqueSolver est un solveur automatique de grilles de Sudoku. Il utilise un algorithme de résolution récursif pour résoudre la grille.
+ */
+public class AutomatiqueSolver extends SudokuSolver {
+    /**
+     * Constructeur de la classe AutomatiqueSolver.
+     * 
+     * @param grille la grille de Sudoku à résoudre
+     */
+    public AutomatiqueSolver(GrilleSudoku grille) {
+        // Initialisation de la grille
+    }
+
+    /**
+     * Méthode pour résoudre automatiquement la grille de Sudoku.
+     * 
+     * @return true si la grille est résolue, false sinon
+     */
+    @Override
+    public boolean resoudre() {
+        // Logique de résolution automatique
+    }
+
+    // Méthode privée pour la résolution récursive
+}
+
+/**
+ * La classe Cellule représente une cellule individuelle dans la grille de Sudoku. Chaque cellule contient une valeur.
+ */
+public class Cellule implements Serializable {
+    /**
+     * Constructeur par défaut de la classe Cellule.
+     */
+    public Cellule() {
+        // Initialisation de la cellule avec une valeur par défaut
+    }
+
+    /**
+     * Constructeur de la classe Cellule avec une valeur donnée.
+     * 
+     * @param valeur la valeur de la cellule
+     * @throws IllegalArgumentException si la valeur est invalide
+     */
+    public Cellule(int valeur) {
+        // Initialisation de la cellule avec une valeur donnée
+    }
+
+    // Méthodes d'accès et de manipulation de la valeur de la cellule
+}
+
+/**
+ * La classe ChargerSauvegardeController est responsable du chargement des grilles de Sudoku à partir de fichiers.
+ */
+public class ChargerSauvegardeController {
+    /**
+     * Méthode pour charger les données d'une grille à partir d'un fichier.
+     * 
+     * @param filePath le chemin du fichier contenant les données de la grille
+     * @param frame    la fenêtre de l'application pour afficher les messages d'erreur
+     * @return un tableau 2D représentant les données de la grille chargée
+     */
+    public int[][] loadGridData(String filePath, JFrame frame) {
+        // Logique de chargement des données de la grille
+    }
+}
+
+/**
+ * La classe GrilleSudoku représente la grille de Sudoku. Elle contient un tableau de cellules.
+ */
+public class GrilleSudoku implements Serializable {
+    // Attributs et méthodes pour représenter et manipuler la grille de Sudoku
+}
+
+/**
+ * La classe ManuelSolver est un solveur manuel de grilles de Sudoku. Elle permet à l'utilisateur de remplir la grille de manière interactive.
+ */
+public class ManuelSolver extends SudokuSolver {
+    // Attributs et méthodes pour la résolution manuelle de la grille de Sudoku
+}
+
+/**
+ * La classe SudokuFileHandler est responsable de la manipulation des fichiers de sauvegarde de grilles de Sudoku.
+ */
+public class SudokuFileHandler {
+    // Méthodes pour charger et sauvegarder des grilles de Sudoku à partir de fichiers
+}
+
+/**
+ * La classe SudokuFileIO gère l'entrée/sortie des données pour les grilles de Sudoku.
+ */
+public class SudokuFileIO {
+    // Méthodes pour charger et sauvegarder des grilles de Sudoku à partir de fichiers
+}
+
+/**
+ * La classe SudokuInterface est l'interface graphique du jeu Sudoku. Elle affiche la grille de jeu et gère les interactions avec l'utilisateur.
+ */
+public class SudokuInterface extends JFrame {
+    // Attributs et méthodes pour l'interface graphique du jeu Sudoku
+}
+
+/**
+ * La classe SudokuSolver est une classe abstraite représentant un solveur de grilles de Sudoku.
+ */
+public abstract class SudokuSolver {
+    // Attributs et méthodes communs à tous les solveurs de Sudoku
+}
+
+
+
+
+
+
+
+
+
