@@ -8,8 +8,10 @@ import javax.swing.border.Border;
 public class SudokuInterface extends JFrame {
     private GrilleSudoku grille;
     private JButton[][] boutons;
-    private JButton sauvegarderButton;
     private JButton chargerButton;
+    private JButton resoudreButton;
+    private JButton reinitialiserButton;
+    private GrilleSudoku grilleChargee;
 
     public SudokuInterface(GrilleSudoku grille) {
         super("Sudoku");
@@ -40,13 +42,15 @@ public class SudokuInterface extends JFrame {
             }
         }
 
-        sauvegarderButton = new JButton("Sauvegarder");
         chargerButton = new JButton("Charger");
+        resoudreButton = new JButton("Résoudre");
+        reinitialiserButton = new JButton("Réinitialiser");
 
-        // Ajout des boutons de sauvegarde et de chargement
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-        buttonPanel.add(sauvegarderButton);
+        // Ajout du bouton de chargement
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3)); // Modifié pour 3 colonnes
         buttonPanel.add(chargerButton);
+        buttonPanel.add(resoudreButton);
+        buttonPanel.add(reinitialiserButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
         // Ajout du grillePanel à la fenêtre principale
@@ -57,19 +61,7 @@ public class SudokuInterface extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // Ajout des actions pour les boutons de sauvegarde et de chargement
-        sauvegarderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int choice = fileChooser.showSaveDialog(SudokuInterface.this);
-                if (choice == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    sauvegarderGrille(file);
-                }
-            }
-        });
-
+        // Ajout de l'action pour le bouton de chargement
         chargerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,41 +73,77 @@ public class SudokuInterface extends JFrame {
                 }
             }
         });
+
+        // Ajout de l'action pour le bouton "Résoudre"
+        resoudreButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resoudreGrille();
+            }
+        });
+
+        reinitialiserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                grille.reinitialiser(); // Réinitialisation de la grille
+                refreshUI(); // Mise à jour de l'interface utilisateur
+            }
+        });
     }
 
-    private void sauvegarderGrille(File file) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
-            outputStream.writeObject(grille);
-            System.out.println("Grille sauvegardée avec succès.");
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Erreur lors de la sauvegarde de la grille : " + ex.getMessage());
+    public void desactiverEditionGrilleChargee() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (!grilleChargee.getCellule(i, j).estVide()) {
+                    boutons[i][j].setEnabled(false); // Désactiver l'édition des cellules chargées
+                }
+            }
         }
     }
 
     private void chargerGrille(File file) {
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
-            grille = (GrilleSudoku) inputStream.readObject();
+            grilleChargee = (GrilleSudoku) inputStream.readObject(); // Stocker la grille chargée
+            grille = grilleChargee; // Mettre à jour la grille affichée
             refreshUI();
             System.out.println("Grille chargée avec succès.");
+
+            desactiverEditionGrilleChargee();
+
         } catch (IOException | ClassNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "Erreur lors du chargement de la grille : " + ex.getMessage());
         }
     }
 
-    private void refreshUI() {
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            Cellule cellule = grille.getCellule(i, j);
-            String valeur = cellule.estVide() ? "" : Integer.toString(cellule.getValeur());
-            boutons[i][j].setText(valeur);
+    private void resoudreGrille() {
+        if (grille == null) {
+            JOptionPane.showMessageDialog(this, "Veuillez charger une grille avant de la résoudre.");
+            return;
+        }
+        if (!grille.resoudre()) {
+            JOptionPane.showMessageDialog(this, "La grille chargée n'a pas de solution.");
+        }
+        refreshUI(); // Mettre à jour l'interface utilisateur après la résolution
+    }
+
+    public void refreshUI() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                int valeur = grille.getCellule(i, j).getValeur();
+                boutons[i][j].setText(valeur == 0 ? "" : Integer.toString(valeur));
+            }
         }
     }
-}
-
 
     public JButton[][] getBoutons() {
         return boutons;
     }
 
-    
+    public JButton getChargerButton() {
+        return chargerButton;
+    }
+
+    public JButton getResoudreButton() {
+        return resoudreButton;
+    }
 }

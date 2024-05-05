@@ -16,6 +16,17 @@ public class GrilleSudoku implements Serializable {
     public Cellule getCellule(int ligne, int colonne) {
         return grille[ligne][colonne];
     }
+    
+
+    public void reinitialiser() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                grille[i][j].setValeur(0); // Remise à zéro de la valeur de chaque cellule
+            }
+        }
+    }
+
+
 
     public void setCellule(int ligne, int colonne, int valeur) {
         grille[ligne][colonne].setValeur(valeur);
@@ -59,5 +70,34 @@ public class GrilleSudoku implements Serializable {
             }
         }
         return true;
+    }
+
+    public boolean resoudre() {
+    return resoudre(0, 0);
+}
+
+    private boolean resoudre(int ligne, int colonne) {
+        if (ligne == 9) {
+            return true; // La grille est résolue
+        }
+
+        if (grille[ligne][colonne].estVide()) {
+            for (int valeur = 1; valeur <= 9; valeur++) {
+                if (estValide(ligne, colonne, valeur)) {
+                    grille[ligne][colonne].setValeur(valeur);
+                    int nextLigne = ligne + (colonne + 1) / 9;
+                    int nextColonne = (colonne + 1) % 9;
+                    if (resoudre(nextLigne, nextColonne)) {
+                        return true;
+                    }
+                    grille[ligne][colonne].setValeur(0); // Réinitialiser la valeur si la résolution a échoué
+                }
+            }
+            return false; // Aucune valeur valide pour cette case
+        } else {
+            int nextLigne = ligne + (colonne + 1) / 9;
+            int nextColonne = (colonne + 1) % 9;
+            return resoudre(nextLigne, nextColonne); // Passer à la prochaine case
+        }
     }
 }

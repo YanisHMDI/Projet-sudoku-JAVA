@@ -1,65 +1,53 @@
-import javax.swing.*;
-import java.awt.event.ActionEvent;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import java.awt.Color;
 
-public class ManuelSolver extends SudokuSolver implements ActionListener {
+public class ManuelSolver extends SudokuSolver {
     private SudokuInterface sudokuInterface;
 
     public ManuelSolver(GrilleSudoku grille, SudokuInterface sudokuInterface) {
         super(grille);
         this.sudokuInterface = sudokuInterface;
-
-        // Ajout de l'action listener pour chaque bouton de la grille
-        for (JButton[] row : sudokuInterface.getBoutons()) {
-            for (JButton button : row) {
-                button.addActionListener(this);
-            }
-        }
     }
 
     @Override
-    public void resoudre() {
-        // Mode manuel : l'utilisateur résout le Sudoku
-        sudokuInterface.setModeManuel();
+    public boolean resoudre() {
+        // Cette méthode n'est pas utilisée pour le solveur manuel
+        return false;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        JButton selectedButton = (JButton) e.getSource();
+    public void resoudreManuellement() {
+        JButton[][] boutons = sudokuInterface.getBoutons();
+        for (int ligne = 0; ligne < 9; ligne++) {
+            for (int colonne = 0; colonne < 9; colonne++) {
+                Cellule cellule = grille.getCellule(ligne, colonne);
+                if (cellule.estVide()) {
+                    // Afficher un message pour indiquer à l'utilisateur de remplir la case (ligne, colonne)
+                    JOptionPane.showMessageDialog(sudokuInterface, "Veuillez remplir la case (" + (ligne + 1) + ", " + (colonne + 1) + ").");
 
-        // Récupérer les coordonnées de la case sélectionnée à partir du bouton cliqué
-        int row = (int) selectedButton.getClientProperty("row");
-        int col = (int) selectedButton.getClientProperty("col");
+                    // Attendre que l'utilisateur remplisse la case
+                    boolean caseRemplie = false;
+                    while (!caseRemplie) {
+                        // Mettre en surbrillance la case pour indiquer à l'utilisateur de la remplir
+                        boutons[ligne][colonne].setBackground(Color.YELLOW);
 
-        // Demander à l'utilisateur d'entrer une valeur
-        String inputValue = JOptionPane.showInputDialog("Entrez un nombre entre 1 et 9 :");
-
-        // Vérifier si l'entrée n'est pas nulle
-        if (inputValue != null && !inputValue.isEmpty()) {
-            try {
-                // Convertir la valeur en entier
-                int value = Integer.parseInt(inputValue);
-                // Vérifier si la valeur est dans la plage valide
-                if (value >= 1 && value <= 9) {
-                    // Vérifier si la valeur est valide pour cette cellule
-                    if (grille.estValide(row, col, value)) {
-                        // Mettre à jour la valeur de la cellule dans la grille
-                        grille.setCellule(row, col, value);
-                        // Mettre à jour l'affichage du bouton
-                        selectedButton.setText(inputValue);
-
-                        // Vérifier si la grille est complète
-                        if (grille.estComplet()) {
-                            JOptionPane.showMessageDialog(null, "Félicitations ! Vous avez résolu le Sudoku !");
+                        // Attendre que l'utilisateur clique sur la case et entre une valeur
+                        try {
+                            Thread.sleep(500); // Attente de 500 millisecondes pour permettre à l'interface de se mettre à jour
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Nombre invalide ! Veuillez entrer un nombre valide.");
+
+                        // Vérifier si la case a été remplie
+                        if (!cellule.estVide()) {
+                            caseRemplie = true;
+                            // Réinitialiser la couleur de fond de la case
+                            boutons[ligne][colonne].setBackground(Color.WHITE);
+                        }
                     }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Le nombre doit être compris entre 1 et 9.");
                 }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(null, "Format de nombre invalide ! Veuillez entrer un nombre valide.");
             }
         }
     }
+
 }
