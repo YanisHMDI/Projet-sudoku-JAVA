@@ -1,4 +1,10 @@
-public class Cellule {
+import java.io.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Cellule implements Serializable {
     private int valeur;
 
     public Cellule() {
@@ -19,7 +25,7 @@ public class Cellule {
     public void setValeur(int valeur) {
         this.valeur = valeur;
     }
-    
+
     public boolean estVide() {
         return valeur == 0;
     }

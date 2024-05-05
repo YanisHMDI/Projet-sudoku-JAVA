@@ -1,4 +1,7 @@
-public class GrilleSudoku {
+import java.io.Serializable;
+
+public class GrilleSudoku implements Serializable {
+    private static final long serialVersionUID = 1L; // Numéro de série pour la sérialisation
     private Cellule[][] grille;
 
     public GrilleSudoku() {
