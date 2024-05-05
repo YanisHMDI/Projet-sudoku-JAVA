@@ -1,4 +1,7 @@
-public class GrilleSudoku {
+import java.io.Serializable;
+
+public class GrilleSudoku implements Serializable {
+    private static final long serialVersionUID = 1L; // Numéro de série pour la sérialisation
     private Cellule[][] grille;
 
     public GrilleSudoku() {
@@ -23,7 +26,7 @@ public class GrilleSudoku {
         for (int i = 0; i < 9; i++) {
             if (i != colonne && grille[ligne][i].getValeur() == valeur) {
                 return false;
-            }    
+            }
         }
 
         // Vérifie si la valeur est déjà présente dans la même colonne

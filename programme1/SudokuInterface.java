@@ -103,12 +103,15 @@ public class SudokuInterface extends JFrame {
     }
 
     private void refreshUI() {
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                boutons[i][j].setText(Integer.toString(grille.getCellule(i, j).getValeur()));
-            }
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            Cellule cellule = grille.getCellule(i, j);
+            String valeur = cellule.estVide() ? "" : Integer.toString(cellule.getValeur());
+            boutons[i][j].setText(valeur);
         }
     }
+}
+
 
     public JButton[][] getBoutons() {
         return boutons;
