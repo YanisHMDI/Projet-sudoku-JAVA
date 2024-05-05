@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+import java.io.File;
 
 public class SudokuController implements ActionListener {
     private GrilleSudoku grille;
@@ -91,5 +91,5 @@ public class SudokuController implements ActionListener {
             // grille.resoudre(); // Par exemple
         }
     }
-    
+
 }
