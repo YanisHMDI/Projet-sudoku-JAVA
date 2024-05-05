@@ -11,6 +11,11 @@ public class SauvegardeController {
         if (userSelection == JFileChooser.APPROVE_OPTION) {
             try {
                 String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+
+                if (!filePath.toLowerCase().endsWith(".gri")) {
+                    filePath += ".gri";
+                }
+                
                 BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
                 for (int i = 0; i < 9; i++) {
                     for (int j = 0; j < 9; j++) {
