@@ -88,7 +88,7 @@ public class SudokuController implements ActionListener {
             // Mode automatique
             grille = new GrilleSudoku();
             // Logique pour générer une grille automatiquement
-            // grille.resoudre(); // Par exemple
+            grille.resoudre();
         }
     }
 

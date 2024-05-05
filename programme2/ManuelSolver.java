@@ -12,7 +12,6 @@ public class ManuelSolver extends SudokuSolver {
 
     @Override
     public boolean resoudre() {
-        // Cette méthode n'est pas utilisée pour le solveur manuel
         return false;
     }
 

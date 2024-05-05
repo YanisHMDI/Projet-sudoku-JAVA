@@ -47,7 +47,7 @@ public class SudokuInterface extends JFrame {
         reinitialiserButton = new JButton("Réinitialiser");
 
         // Ajout du bouton de chargement
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3)); // Modifié pour 3 colonnes
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3)); 
         buttonPanel.add(chargerButton);
         buttonPanel.add(resoudreButton);
         buttonPanel.add(reinitialiserButton);

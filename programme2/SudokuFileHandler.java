@@ -21,17 +21,5 @@ public class SudokuFileHandler {
         return grille;
     }
 
-    // public static void sauvegarderGrille(GrilleSudoku grille, String cheminFichier) throws FileNotFoundException {
-    //     PrintWriter writer = new PrintWriter(cheminFichier);
-        
-    //     for (int i = 0; i < 9; i++) {
-    //         StringBuilder ligne = new StringBuilder();
-    //         for (int j = 0; j < 9; j++) {
-    //             ligne.append(grille.getCellule(i, j).getValeur());
-    //         }
-    //         writer.println(ligne);
-    //     }
-        
-    //     writer.close();
-    // }
+
 }
