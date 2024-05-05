@@ -23,7 +23,7 @@ public class GrilleSudoku {
         for (int i = 0; i < 9; i++) {
             if (i != colonne && grille[ligne][i].getValeur() == valeur) {
                 return false;
-            }
+            }    
         }
 
         // Vérifie si la valeur est déjà présente dans la même colonne

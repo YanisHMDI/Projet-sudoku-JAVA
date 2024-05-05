@@ -1,22 +1,22 @@
+import java.io.*;
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.border.Border;
 
 public class SudokuInterface extends JFrame {
     private GrilleSudoku grille;
     private JButton[][] boutons;
     private JButton sauvegarderButton;
     private JButton chargerButton;
-    private SudokuController controller;
 
     public SudokuInterface(GrilleSudoku grille) {
         super("Sudoku");
-
-        // Initialisation de la grille Sudoku avec la grille passée en argument
         this.grille = grille;
 
-        // Création des boutons pour chaque cellule de la grille
         boutons = new JButton[9][9];
+        // Initialisation de l'interface graphique
         JPanel grillePanel = new JPanel(new GridLayout(3, 3));
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -40,49 +40,79 @@ public class SudokuInterface extends JFrame {
             }
         }
 
-        // Création des boutons pour les fonctionnalités supplémentaires
         sauvegarderButton = new JButton("Sauvegarder");
         chargerButton = new JButton("Charger");
 
-        // Configuration de la fenêtre
-        setLayout(new BorderLayout());
-        add(grillePanel, BorderLayout.CENTER);
+        // Ajout des boutons de sauvegarde et de chargement
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         buttonPanel.add(sauvegarderButton);
         buttonPanel.add(chargerButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        // Ajout du grillePanel à la fenêtre principale
+        add(grillePanel, BorderLayout.CENTER);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // Création du contrôleur
-        controller = new SudokuController(grille, this);
-        // Ajout des action listeners aux boutons Sauvegarder et Charger
-        sauvegarderButton.addActionListener(controller);
-        chargerButton.addActionListener(controller);
+        // Ajout des actions pour les boutons de sauvegarde et de chargement
+        sauvegarderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int choice = fileChooser.showSaveDialog(SudokuInterface.this);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    sauvegarderGrille(file);
+                }
+            }
+        });
+
+        chargerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                int choice = fileChooser.showOpenDialog(SudokuInterface.this);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    chargerGrille(file);
+                }
+            }
+        });
+    }
+
+    private void sauvegarderGrille(File file) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
+            outputStream.writeObject(grille);
+            System.out.println("Grille sauvegardée avec succès.");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Erreur lors de la sauvegarde de la grille : " + ex.getMessage());
+        }
+    }
+
+    private void chargerGrille(File file) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
+            grille = (GrilleSudoku) inputStream.readObject();
+            refreshUI();
+            System.out.println("Grille chargée avec succès.");
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null, "Erreur lors du chargement de la grille : " + ex.getMessage());
+        }
+    }
+
+    private void refreshUI() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                boutons[i][j].setText(Integer.toString(grille.getCellule(i, j).getValeur()));
+            }
+        }
     }
 
     public JButton[][] getBoutons() {
         return boutons;
     }
 
-    public GrilleSudoku getGrille() {
-        return grille;
-    }
-
-    public JButton getSauvegarderButton() {
-        return sauvegarderButton;
-    }
-
-    public JButton getChargerButton() {
-        return chargerButton;
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            GrilleSudoku grille = SudokuFileIO.chargerGrilleVide(); // Charger une grille vide au démarrage
-            SudokuInterface sudokuInterface = new SudokuInterface(grille);
-        });
-    }
+    
 }

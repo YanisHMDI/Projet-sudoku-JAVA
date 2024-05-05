@@ -1,24 +1,19 @@
 import java.io.*;
 
 public class SudokuFileIO {
-    private static final String FILENAME = "sudoku.txt";
+    private static final String FILENAME = "sudoku.ser";
 
-    public static void sauvegarderGrilleVide() {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILENAME))) {
-            for (int ligne = 0; ligne < 9; ligne++) {
-                for (int colonne = 0; colonne < 9; colonne++) {
-                    writer.print("0"); // Grille vide
-                }
-                writer.println();
-            }
+    public static void sauvegarderGrille(GrilleSudoku grille) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILENAME))) {
+            outputStream.writeObject(grille);
+            System.out.println("Grille sauvegardée avec succès.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static GrilleSudoku chargerGrilleVide() {
-        GrilleSudoku grille = new GrilleSudoku();
-        // Nous n'avons pas besoin de charger une grille vide car elle est déjà initialisée lors de la création
-        return grille;
+        return new GrilleSudoku(); // Retourne une nouvelle grille vide
     }
 }
+
