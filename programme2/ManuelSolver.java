@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ManuelSolver extends SudokuSolver implements ActionListener {
     private SudokuInterface sudokuInterface;
@@ -41,14 +42,14 @@ public class ManuelSolver extends SudokuSolver implements ActionListener {
                 // Vérifier si la valeur est dans la plage valide
                 if (value >= 1 && value <= 9) {
                     // Vérifier si la valeur est valide pour cette cellule
-                    if (grille.estValide(row, col, value)) {
+                    if (getGrille().estValide(row, col, value)) {
                         // Mettre à jour la valeur de la cellule dans la grille
-                        grille.setCellule(row, col, value);
+                        getGrille().setCellule(row, col, value);
                         // Mettre à jour l'affichage du bouton
                         selectedButton.setText(inputValue);
 
                         // Vérifier si la grille est complète
-                        if (grille.estComplet()) {
+                        if (getGrille().estComplet()) {
                             JOptionPane.showMessageDialog(null, "Félicitations ! Vous avez résolu le Sudoku !");
                         }
                     } else {

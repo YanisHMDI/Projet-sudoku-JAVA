@@ -1,4 +1,3 @@
-import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,8 +7,8 @@ import javax.swing.border.Border;
 public class SudokuInterface extends JFrame {
     private GrilleSudoku grille;
     private JButton[][] boutons;
-    private JButton sauvegarderButton;
     private JButton chargerButton;
+    private boolean modeManuel = false;
 
     public SudokuInterface(GrilleSudoku grille) {
         super("Sudoku");
@@ -33,6 +32,43 @@ public class SudokuInterface extends JFrame {
                         boutons[i * 3 + k][j * 3 + l].putClientProperty("row", i * 3 + k);
                         boutons[i * 3 + k][j * 3 + l].putClientProperty("col", j * 3 + l);
 
+                        // Ajout d'un écouteur d'événements à chaque bouton pour le mode manuel
+                        boutons[i * 3 + k][j * 3 + l].addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                if (modeManuel) {
+                                    JButton selectedButton = (JButton) e.getSource();
+                                    int row = (int) selectedButton.getClientProperty("row");
+                                    int col = (int) selectedButton.getClientProperty("col");
+
+                                    // Demander à l'utilisateur d'entrer une valeur
+                                    String inputValue = JOptionPane.showInputDialog("Entrez un nombre entre 1 et 9 :");
+
+                                    // Vérifier si l'entrée n'est pas nulle
+                                    if (inputValue != null && !inputValue.isEmpty()) {
+                                        try {
+                                            int value = Integer.parseInt(inputValue);
+                                            if (value >= 1 && value <= 9) {
+                                                // Vérifier si la valeur est valide pour cette cellule
+                                                if (grille.estValide(row, col, value)) {
+                                                    // Mettre à jour la valeur de la cellule dans la grille
+                                                    grille.setCellule(row, col, value);
+                                                    // Mettre à jour l'affichage du bouton
+                                                    selectedButton.setText(inputValue);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, "Nombre invalide ! Veuillez entrer un nombre valide.");
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Le nombre doit être compris entre 1 et 9.");
+                                            }
+                                        } catch (NumberFormatException ex) {
+                                            JOptionPane.showMessageDialog(null, "Format de nombre invalide ! Veuillez entrer un nombre valide.");
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
                         sousGrillePanel.add(boutons[i * 3 + k][j * 3 + l]);
                     }
                 }
@@ -40,12 +76,10 @@ public class SudokuInterface extends JFrame {
             }
         }
 
-        sauvegarderButton = new JButton("Sauvegarder");
         chargerButton = new JButton("Charger");
 
-        // Ajout des boutons de sauvegarde et de chargement
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
-        buttonPanel.add(sauvegarderButton);
+        // Ajout du bouton de chargement
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 1));
         buttonPanel.add(chargerButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -57,19 +91,7 @@ public class SudokuInterface extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        // Ajout des actions pour les boutons de sauvegarde et de chargement
-        sauvegarderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
-                int choice = fileChooser.showSaveDialog(SudokuInterface.this);
-                if (choice == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-                    sauvegarderGrille(file);
-                }
-            }
-        });
-
+        // Ajout de l'action pour le bouton de chargement
         chargerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,15 +105,6 @@ public class SudokuInterface extends JFrame {
         });
     }
 
-    private void sauvegarderGrille(File file) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
-            outputStream.writeObject(grille);
-            System.out.println("Grille sauvegardée avec succès.");
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Erreur lors de la sauvegarde de la grille : " + ex.getMessage());
-        }
-    }
-
     private void chargerGrille(File file) {
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
             grille = (GrilleSudoku) inputStream.readObject();
@@ -102,20 +115,18 @@ public class SudokuInterface extends JFrame {
         }
     }
 
-    private void refreshUI() {
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            Cellule cellule = grille.getCellule(i, j);
-            String valeur = cellule.estVide() ? "" : Integer.toString(cellule.getValeur());
-            boutons[i][j].setText(valeur);
+    public void refreshUI() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                Cellule cellule = grille.getCellule(i, j);
+                String valeur = cellule.estVide() ? "" : Integer.toString(cellule.getValeur());
+                boutons[i][j].setText(valeur);
+            }
         }
     }
-}
 
-
-    public JButton[][] getBoutons() {
-        return boutons;
+    // Méthode pour activer le mode manuel
+    public void setModeManuel(boolean mode) {
+        this.modeManuel = mode;
     }
-
-    
 }

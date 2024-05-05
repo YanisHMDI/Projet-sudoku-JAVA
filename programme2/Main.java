@@ -5,7 +5,8 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
             GrilleSudoku grille = SudokuFileIO.chargerGrilleVide(); // Charger une grille vide au démarrage
             SudokuInterface sudokuInterface = new SudokuInterface(grille);
-            SudokuController controller = new SudokuController(grille, sudokuInterface);
+            // Ajout du troisième argument pour le mode (true pour le mode automatique, false pour le mode manuel)
+            SudokuController controller = new SudokuController(grille, sudokuInterface, true);
             sudokuInterface.setVisible(true); // Assurez-vous que l'interface est visible
         });
     }
